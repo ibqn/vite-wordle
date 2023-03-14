@@ -24,6 +24,8 @@ export const App = () => {
   )
   const [fullMatch, setFullMatch] = useState('')
 
+  const [shake, setShake] = useState(false)
+
   console.log('words', words)
   console.log('current row', currentRow)
   console.log('full match', fullMatch)
@@ -53,10 +55,12 @@ export const App = () => {
     }
 
     if (words[currentRow].length !== 5) {
+      setShake(true)
       return
     }
 
     if (!dictionary.includes(words[currentRow])) {
+      setShake(true)
       return
     }
 
@@ -124,7 +128,14 @@ export const App = () => {
             })
           }
           return (
-            <div className="grid grid-cols-5 gap-1.5" key={rowIndex}>
+            <div
+              className={classNames(
+                'grid grid-cols-5 gap-1.5',
+                currentRow === rowIndex && shake && 'animate-shake'
+              )}
+              onAnimationEnd={() => setShake(false)}
+              key={rowIndex}
+            >
               {word
                 .padEnd(5, ' ')
                 .split('')
