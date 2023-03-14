@@ -1,6 +1,6 @@
 import { BackspaceIcon } from '@heroicons/react/24/solid'
 import { classNames } from '@/utils/class-names'
-import { useState } from 'preact/compat'
+import { useCallback, useState } from 'preact/compat'
 
 import targetWords from '@/data/target-words.json'
 import dictionary from '@/data/dictionary.json'
@@ -22,6 +22,7 @@ export const App = () => {
   const [targetWord] = useState(
     targetWords[Math.floor(Math.random() * targetWords.length)]
   )
+  const [fullMatch, setFullMatch] = useState('')
 
   console.log('words', words)
   console.log('current row', currentRow)
@@ -33,9 +34,7 @@ export const App = () => {
     }
 
     setWords(
-      words.map((word, index) =>
-        index === currentRow ? word + letter.toLowerCase() : word
-      )
+      words.map((word, index) => (index === currentRow ? word + letter : word))
     )
   }
 
@@ -60,12 +59,35 @@ export const App = () => {
       return
     }
 
+    words[currentRow].split('').forEach((letter, index) => {
+      if (targetWord[index] === letter && !fullMatch.includes(letter)) {
+        setFullMatch(fullMatch + letter)
+      }
+    })
+
     setCurrentRow(currentRow + 1)
   }
 
-  const getBackground = (letter: string) => {
-    const tryWords = words.slice(0, Math.min(0, currentRow - 1))
-  }
+  const getBackgroundStyles = useCallback(
+    (letter: string) => {
+      const usedLetters = words.slice(0, Math.max(0, currentRow)).join('')
+
+      if (!usedLetters.includes(letter)) {
+        return 'bg-[#818384]'
+      }
+
+      if (fullMatch.includes(letter)) {
+        return 'bg-[#538d4e]'
+      }
+
+      if (usedLetters.includes(letter) && targetWord.includes(letter)) {
+        return 'bg-[#b59f3b]'
+      }
+
+      return 'bg-[#3a3a3c]'
+    },
+    [fullMatch, words, targetWord, currentRow]
+  )
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#121213]">
@@ -77,17 +99,17 @@ export const App = () => {
                 .padEnd(5, ' ')
                 .split('')
                 .map((letter, letterIndex) => {
-                  let bgColor
+                  let bgStyles = 'border-2 border-solid border-[#3a3a3c]'
 
                   if (currentRow > rowIndex) {
-                    bgColor = 'bg-[#3a3a3c]'
+                    bgStyles = 'bg-[#3a3a3c]'
 
                     if (targetWord.includes(letter)) {
-                      bgColor = 'bg-[#b59f3b]'
+                      bgStyles = 'bg-[#b59f3b]'
                     }
 
                     if (targetWord[letterIndex] === letter) {
-                      bgColor = 'bg-[#538d4e]'
+                      bgStyles = 'bg-[#538d4e]'
                     }
                   }
 
@@ -96,9 +118,7 @@ export const App = () => {
                       className={classNames(
                         'flex items-center justify-center',
                         'text-2xl font-bold uppercase text-white',
-                        bgColor
-                          ? bgColor
-                          : 'border-2 border-solid border-[#3a3a3c]'
+                        bgStyles
                       )}
                       key={letterIndex}
                     >
@@ -113,36 +133,36 @@ export const App = () => {
 
       <div className="mx-2 flex w-[500px] flex-col">
         <div className="mb-2 flex flex-1">
-          {firstRow.map((button, index) => {
+          {firstRow.map((letter, index) => {
             return (
               <button
                 className={classNames(
                   buttonClasses,
                   'flex-1 text-base',
-                  'bg-[#818384]'
+                  getBackgroundStyles(letter)
                 )}
                 key={index}
-                onClick={handleLetterPress(button)}
+                onClick={handleLetterPress(letter)}
               >
-                {button}
+                {letter}
               </button>
             )
           })}
         </div>
         <div className="mb-2 flex flex-1">
           <div className="flex-[0.5]"></div>
-          {secondRow.map((button, index) => {
+          {secondRow.map((letter, index) => {
             return (
               <button
                 className={classNames(
                   buttonClasses,
                   'flex-1 text-base',
-                  'bg-[#818384]'
+                  getBackgroundStyles(letter)
                 )}
                 key={index}
-                onClick={handleLetterPress(button)}
+                onClick={handleLetterPress(letter)}
               >
-                {button}
+                {letter}
               </button>
             )
           })}
@@ -159,18 +179,18 @@ export const App = () => {
           >
             enter
           </button>
-          {thirdRow.map((button, index) => {
+          {thirdRow.map((letter, index) => {
             return (
               <button
                 className={classNames(
                   buttonClasses,
                   'flex-1 text-base',
-                  'bg-[#818384]'
+                  getBackgroundStyles(letter)
                 )}
                 key={index}
-                onClick={handleLetterPress(button)}
+                onClick={handleLetterPress(letter)}
               >
-                {button}
+                {letter}
               </button>
             )
           })}
