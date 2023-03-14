@@ -52,7 +52,7 @@ export const App = () => {
       return
     }
 
-    if (currentRow === 5) {
+    if (currentRow > 5) {
       return
     }
 
@@ -151,7 +151,11 @@ export const App = () => {
         <div className="mb-2 flex flex-1">
           <button
             onClick={handleEnter}
-            className={classNames(buttonClasses, 'flex-[1.5] text-xs')}
+            className={classNames(
+              buttonClasses,
+              'flex-[1.5] text-xs',
+              'bg-[#818384]'
+            )}
           >
             enter
           </button>
@@ -173,7 +177,8 @@ export const App = () => {
           <button
             className={classNames(
               buttonClasses,
-              'flex flex-[1.5] items-center justify-center'
+              'flex flex-[1.5] items-center justify-center',
+              'bg-[#818384]'
             )}
             onClick={handleRemove}
           >
