@@ -1,6 +1,6 @@
 import { BackspaceIcon } from '@heroicons/react/24/solid'
 import { classNames } from '@/utils/class-names'
-import { useCallback, useState } from 'preact/compat'
+import { useCallback, useMemo, useState } from 'preact/compat'
 
 import targetWords from '@/data/target-words.json'
 import dictionary from '@/data/dictionary.json'
@@ -14,7 +14,7 @@ const keyboardRows = [
 const buttonClasses = 'ml-1.5 h-[58px] rounded font-bold uppercase text-white'
 
 export const App = () => {
-  const [firstRow, secondRow, thirdRow] = keyboardRows
+  const [firstRow, secondRow, thirdRow] = useMemo(() => keyboardRows, [])
 
   const [words, setWords] = useState(Array.from({ length: 6 }, () => ''))
   const [currentRow, setCurrentRow] = useState(0)
@@ -26,6 +26,7 @@ export const App = () => {
 
   console.log('words', words)
   console.log('current row', currentRow)
+  console.log('full match', fullMatch)
   console.log(targetWord)
 
   const handleLetterPress = (letter: string) => () => {
@@ -47,11 +48,11 @@ export const App = () => {
   }
 
   const handleEnter = () => {
-    if (words[currentRow].length !== 5) {
+    if (currentRow > 5) {
       return
     }
 
-    if (currentRow > 5) {
+    if (words[currentRow].length !== 5) {
       return
     }
 
@@ -59,33 +60,52 @@ export const App = () => {
       return
     }
 
+    let newFullMatch = fullMatch
     words[currentRow].split('').forEach((letter, index) => {
-      if (targetWord[index] === letter && !fullMatch.includes(letter)) {
-        setFullMatch(fullMatch + letter)
+      if (targetWord[index] === letter && !newFullMatch.includes(letter)) {
+        newFullMatch += letter
       }
     })
 
+    setFullMatch(newFullMatch)
     setCurrentRow(currentRow + 1)
   }
 
-  const getBackgroundStyles = useCallback(
-    (letter: string) => {
-      const usedLetters = words.slice(0, Math.max(0, currentRow)).join('')
+  const getBackgroundStyles = (letter: string) => {
+    const usedLetters = words.slice(0, Math.max(0, currentRow)).join('')
 
-      if (!usedLetters.includes(letter)) {
-        return 'bg-[#818384]'
-      }
+    if (!usedLetters.includes(letter)) {
+      return 'bg-[#818384]'
+    }
 
-      if (fullMatch.includes(letter)) {
-        return 'bg-[#538d4e]'
-      }
+    if (fullMatch.includes(letter)) {
+      return 'bg-[#538d4e]'
+    }
 
-      if (usedLetters.includes(letter) && targetWord.includes(letter)) {
-        return 'bg-[#b59f3b]'
-      }
+    if (usedLetters.includes(letter) && targetWord.includes(letter)) {
+      return 'bg-[#b59f3b]'
+    }
 
-      return 'bg-[#3a3a3c]'
-    },
+    return 'bg-[#3a3a3c]'
+  }
+
+  const addRowKeyboard = useCallback(
+    (keyboardRow: string[]) =>
+      keyboardRow.map((letter, index) => {
+        return (
+          <button
+            className={classNames(
+              buttonClasses,
+              'flex-1 text-base',
+              getBackgroundStyles(letter)
+            )}
+            key={index}
+            onClick={handleLetterPress(letter)}
+          >
+            {letter}
+          </button>
+        )
+      }),
     [fullMatch, words, targetWord, currentRow]
   )
 
@@ -141,40 +161,10 @@ export const App = () => {
       </div>
 
       <div className="mx-2 flex w-[500px] flex-col">
-        <div className="mb-2 flex flex-1">
-          {firstRow.map((letter, index) => {
-            return (
-              <button
-                className={classNames(
-                  buttonClasses,
-                  'flex-1 text-base',
-                  getBackgroundStyles(letter)
-                )}
-                key={index}
-                onClick={handleLetterPress(letter)}
-              >
-                {letter}
-              </button>
-            )
-          })}
-        </div>
+        <div className="mb-2 flex flex-1">{addRowKeyboard(firstRow)}</div>
         <div className="mb-2 flex flex-1">
           <div className="flex-[0.5]"></div>
-          {secondRow.map((letter, index) => {
-            return (
-              <button
-                className={classNames(
-                  buttonClasses,
-                  'flex-1 text-base',
-                  getBackgroundStyles(letter)
-                )}
-                key={index}
-                onClick={handleLetterPress(letter)}
-              >
-                {letter}
-              </button>
-            )
-          })}
+          {addRowKeyboard(secondRow)}
           <div className="flex-[0.5]"></div>
         </div>
         <div className="mb-2 flex flex-1">
@@ -188,21 +178,7 @@ export const App = () => {
           >
             enter
           </button>
-          {thirdRow.map((letter, index) => {
-            return (
-              <button
-                className={classNames(
-                  buttonClasses,
-                  'flex-1 text-base',
-                  getBackgroundStyles(letter)
-                )}
-                key={index}
-                onClick={handleLetterPress(letter)}
-              >
-                {letter}
-              </button>
-            )
-          })}
+          {addRowKeyboard(thirdRow)}
           <button
             className={classNames(
               buttonClasses,
