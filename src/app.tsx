@@ -91,8 +91,18 @@ export const App = () => {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#121213]">
-      <div className="grid h-[420px] w-[350px] grid-rows-6 gap-1.5 p-2.5">
+      <div className="mb-8 grid h-[420px] w-[350px] grid-rows-6 gap-1.5 p-2.5">
         {words.map((word, rowIndex) => {
+          let remainingLetters: string
+
+          if (currentRow > rowIndex) {
+            remainingLetters = targetWord
+            word.split('').forEach((wordLetter, wordIndex) => {
+              if (targetWord[wordIndex] === wordLetter) {
+                remainingLetters = remainingLetters.replace(wordLetter, '')
+              }
+            })
+          }
           return (
             <div className="grid grid-cols-5 gap-1.5" key={rowIndex}>
               {word
@@ -104,12 +114,11 @@ export const App = () => {
                   if (currentRow > rowIndex) {
                     bgStyles = 'bg-[#3a3a3c]'
 
-                    if (targetWord.includes(letter)) {
-                      bgStyles = 'bg-[#b59f3b]'
-                    }
-
                     if (targetWord[letterIndex] === letter) {
                       bgStyles = 'bg-[#538d4e]'
+                    } else if (remainingLetters.includes(letter)) {
+                      remainingLetters = remainingLetters.replace(letter, '')
+                      bgStyles = 'bg-[#b59f3b]'
                     }
                   }
 
