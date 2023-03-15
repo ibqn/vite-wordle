@@ -140,7 +140,10 @@ export const App = () => {
                 .padEnd(5, ' ')
                 .split('')
                 .map((letter, letterIndex) => {
-                  let bgStyles = 'border-2 border-solid border-[#3a3a3c]'
+                  let bgStyles = classNames(
+                    'border-2 border-solid',
+                    letter.trim() ? 'border-[#565758]' : 'border-[#3a3a3c]'
+                  )
 
                   if (currentRow > rowIndex) {
                     bgStyles = 'bg-[#3a3a3c]'
