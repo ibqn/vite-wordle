@@ -6,6 +6,7 @@ module.exports = {
       animation: {
         shake: 'shake 600ms',
         bounce: 'bounce 1s',
+        popin: 'popin 100ms',
       },
       keyframes: {
         bounce: {
@@ -40,6 +41,16 @@ module.exports = {
           },
           '40%, 60%': {
             transform: 'translateX(4px)',
+          },
+        },
+        popin: {
+          from: {
+            transform: 'scale(0.8)',
+            opacity: 0,
+          },
+          '40%': {
+            transform: 'scale(1.1)',
+            opacity: 1,
           },
         },
       },
