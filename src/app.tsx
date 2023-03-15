@@ -178,9 +178,9 @@ export const App = () => {
       <div className="flex w-full max-w-[500px] flex-col gap-y-2 px-2">
         <div className="flex flex-1 gap-x-1.5">{addRowKeyboard(firstRow)}</div>
         <div className="flex flex-1 gap-x-1.5">
-          <div className="flex-[0.5]"></div>
+          <div className="flex-[0.35]"></div>
           {addRowKeyboard(secondRow)}
-          <div className="flex-[0.5]"></div>
+          <div className="flex-[0.35]"></div>
         </div>
         <div className="flex flex-1 gap-x-1.5">
           <button
