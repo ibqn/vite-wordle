@@ -11,7 +11,7 @@ const keyboardRows = [
   ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
 ]
 
-const buttonClasses = 'ml-1.5 h-[58px] rounded font-bold uppercase text-white'
+const buttonClasses = 'h-[58px] rounded font-bold uppercase text-white'
 
 export const App = () => {
   const [firstRow, secondRow, thirdRow] = useMemo(() => keyboardRows, [])
@@ -158,7 +158,8 @@ export const App = () => {
                       className={classNames(
                         'flex items-center justify-center',
                         'text-2xl font-bold uppercase text-white',
-                        bgStyles
+                        bgStyles,
+                        letter.trim() && 'animate-popin'
                       )}
                       key={letterIndex}
                     >
@@ -171,14 +172,14 @@ export const App = () => {
         })}
       </div>
 
-      <div className="mx-2 flex w-[500px] flex-col">
-        <div className="mb-2 flex flex-1">{addRowKeyboard(firstRow)}</div>
-        <div className="mb-2 flex flex-1">
+      <div className="flex w-full max-w-[500px] flex-col gap-y-2 px-2">
+        <div className="flex flex-1 gap-x-1.5">{addRowKeyboard(firstRow)}</div>
+        <div className="flex flex-1 gap-x-1.5">
           <div className="flex-[0.5]"></div>
           {addRowKeyboard(secondRow)}
           <div className="flex-[0.5]"></div>
         </div>
-        <div className="mb-2 flex flex-1">
+        <div className="flex flex-1 gap-x-1.5">
           <button
             onClick={handleEnter}
             className={classNames(
