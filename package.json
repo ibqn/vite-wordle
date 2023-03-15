@@ -13,6 +13,7 @@
     "preact": "^10.11.3"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.21.0",
     "@preact/preset-vite": "^2.5.0",
     "@types/node": "^18.15.2",
     "autoprefixer": "^10.4.14",
