@@ -11,7 +11,7 @@ const keyboardRows = [
   ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
 ]
 
-const buttonClasses = 'h-[58px] rounded font-bold uppercase text-white'
+const buttonClasses = 'h-[58px] rounded-sm font-bold uppercase text-white'
 
 export const App = () => {
   const [firstRow, secondRow, thirdRow] = useMemo(() => keyboardRows, [])
@@ -160,7 +160,7 @@ export const App = () => {
                     <div
                       className={classNames(
                         'flex items-center justify-center',
-                        'text-2xl font-bold uppercase text-white',
+                        'text-2xl font-bold text-white uppercase',
                         bgStyles,
                         letter.trim() && 'animate-popin'
                       )}
