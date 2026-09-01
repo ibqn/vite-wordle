@@ -2,30 +2,8 @@
 
 @theme {
   --animate-shake: shake 600ms;
-  --animate-bounce: bounce 1s;
   --animate-popin: popin 100ms;
 
-  @keyframes bounce {
-    0%,
-    20% {
-      transform: translateY(0);
-    }
-    40% {
-      transform: translateY(-30px);
-    }
-    50% {
-      transform: translateY(5px);
-    }
-    60% {
-      transform: translateY(-15px);
-    }
-    80% {
-      transform: translateY(2px);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
   @keyframes shake {
     10%,
     90% {
@@ -54,6 +32,57 @@
       transform: scale(1.1);
       opacity: 1;
     }
+  }
+}
+
+/*
+  Each tile carries its own delay, so these run from an inline `animation`
+  shorthand instead of an `animate-*` utility. Tailwind only emits `@keyframes`
+  from `@theme` when the matching `--animate-*` variable is used, so they have to
+  live outside it.
+*/
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+    background-color: transparent;
+    border-color: #565758;
+  }
+  49.9% {
+    transform: rotateX(-90deg);
+    background-color: transparent;
+    border-color: #565758;
+  }
+  50% {
+    transform: rotateX(-90deg);
+    background-color: var(--tile-color);
+    border-color: var(--tile-color);
+  }
+  100% {
+    transform: rotateX(0deg);
+    background-color: var(--tile-color);
+    border-color: var(--tile-color);
+  }
+}
+
+@keyframes dance {
+  0%,
+  20% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+  80% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 

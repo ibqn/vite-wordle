@@ -9,6 +9,11 @@ const keyboardRows = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 
 const buttonClasses = 'h-[58px] rounded-sm font-bold uppercase text-white'
 
+const FLIP_DURATION = 500
+const FLIP_STAGGER = 250
+const REVEAL_DURATION = FLIP_STAGGER * 4 + FLIP_DURATION
+const DANCE_STAGGER = 100
+
 export const App = () => {
   const [firstRow, secondRow, thirdRow] = useMemo(() => keyboardRows, [])
 
@@ -113,9 +118,12 @@ export const App = () => {
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#121213]">
       <div className="mb-8 grid h-[420px] w-[350px] grid-rows-6 gap-1.5 p-2.5">
         {words.map((word, rowIndex) => {
-          let remainingLetters: string
+          const isRevealed = currentRow > rowIndex
+          const hasWon = isRevealed && word === targetWord
 
-          if (currentRow > rowIndex) {
+          let remainingLetters = ''
+
+          if (isRevealed) {
             remainingLetters = targetWord
             word.split('').forEach((wordLetter, wordIndex) => {
               if (targetWord[wordIndex] === wordLetter) {
@@ -136,20 +144,31 @@ export const App = () => {
                 .padEnd(5, ' ')
                 .split('')
                 .map((letter, letterIndex) => {
-                  let bgStyles = classNames(
-                    'border-2 border-solid',
-                    letter.trim() ? 'border-[#565758]' : 'border-[#3a3a3c]'
-                  )
+                  let tileColor: string | undefined
 
-                  if (currentRow > rowIndex) {
-                    bgStyles = 'bg-[#3a3a3c]'
+                  if (isRevealed) {
+                    tileColor = '#3a3a3c'
 
                     if (targetWord[letterIndex] === letter) {
-                      bgStyles = 'bg-[#538d4e]'
+                      tileColor = '#538d4e'
                     } else if (remainingLetters.includes(letter)) {
                       remainingLetters = remainingLetters.replace(letter, '')
-                      bgStyles = 'bg-[#b59f3b]'
+                      tileColor = '#b59f3b'
                     }
+                  }
+
+                  const animations = []
+
+                  if (isRevealed) {
+                    animations.push(
+                      `flip ${FLIP_DURATION}ms ease-in ${letterIndex * FLIP_STAGGER}ms backwards`
+                    )
+                  }
+
+                  if (hasWon) {
+                    animations.push(
+                      `dance 1s ${REVEAL_DURATION + letterIndex * DANCE_STAGGER}ms`
+                    )
                   }
 
                   return (
@@ -157,9 +176,19 @@ export const App = () => {
                       className={classNames(
                         'flex items-center justify-center',
                         'text-2xl font-bold text-white uppercase',
-                        bgStyles,
-                        letter.trim() && 'animate-popin'
+                        'border-2 border-solid',
+                        !isRevealed &&
+                          (letter.trim()
+                            ? 'border-[#565758]'
+                            : 'border-[#3a3a3c]'),
+                        !isRevealed && letter.trim() && 'animate-popin'
                       )}
+                      style={{
+                        '--tile-color': tileColor,
+                        backgroundColor: tileColor,
+                        borderColor: tileColor,
+                        animation: animations.join(', ') || undefined,
+                      }}
                       key={letterIndex}
                     >
                       {letter}
