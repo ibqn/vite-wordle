@@ -23,24 +23,25 @@
       transform: translateX(4px);
     }
   }
-  @keyframes popin {
-    from {
-      transform: scale(0.8);
-      opacity: 0;
-    }
-    40% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-  }
 }
 
 /*
-  Each tile carries its own delay, so these run from an inline `animation`
-  shorthand instead of an `animate-*` utility. Tailwind only emits `@keyframes`
-  from `@theme` when the matching `--animate-*` variable is used, so they have to
-  live outside it.
+  These are also started from inline `animation` shorthands, where each element
+  carries its own delay. Tailwind only emits `@keyframes` from `@theme` when the
+  matching `--animate-*` variable is used by a utility, so they have to live
+  outside it to survive.
 */
+@keyframes popin {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
 @keyframes flip {
   0% {
     transform: rotateX(0deg);

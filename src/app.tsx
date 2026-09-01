@@ -27,13 +27,17 @@ export const App = () => {
 
   const [shake, setShake] = useState(false)
 
+  const isWinner = words.slice(0, currentRow).includes(targetWord)
+  const isLoser = !isWinner && currentRow > 5
+  const isGameOver = isWinner || isLoser
+
   console.log('words', words)
   console.log('current row', currentRow)
   console.log('full match', fullMatch)
   console.log(targetWord)
 
   const handleLetterPress = (letter: string) => () => {
-    if (words[currentRow].length === 5) {
+    if (isGameOver || words[currentRow].length === 5) {
       return
     }
 
@@ -43,6 +47,10 @@ export const App = () => {
   }
 
   const handleRemove = () => {
+    if (isGameOver) {
+      return
+    }
+
     setWords(
       words.map((word, index) =>
         index === currentRow ? word.slice(0, -1) : word
@@ -51,7 +59,7 @@ export const App = () => {
   }
 
   const handleEnter = () => {
-    if (currentRow > 5) {
+    if (isGameOver) {
       return
     }
 
@@ -116,6 +124,17 @@ export const App = () => {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#121213]">
+      {isLoser && (
+        <div className="fixed top-8 flex w-full justify-center">
+          <div
+            className="rounded-sm bg-white px-4 py-3 text-base font-bold text-[#121213] uppercase"
+            style={{ animation: `popin 300ms ${REVEAL_DURATION}ms backwards` }}
+          >
+            {targetWord}
+          </div>
+        </div>
+      )}
+
       <div className="mb-8 grid h-[420px] w-[350px] grid-rows-6 gap-1.5 p-2.5">
         {words.map((word, rowIndex) => {
           const isRevealed = currentRow > rowIndex
