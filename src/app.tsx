@@ -5,11 +5,7 @@ import { useCallback, useMemo, useState } from 'preact/compat'
 import targetWords from '@/data/target-words.json'
 import dictionary from '@/data/dictionary.json'
 
-const keyboardRows = [
-  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-]
+const keyboardRows = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 
 const buttonClasses = 'h-[58px] rounded-sm font-bold uppercase text-white'
 
@@ -94,8 +90,8 @@ export const App = () => {
   }
 
   const addRowKeyboard = useCallback(
-    (keyboardRow: string[]) =>
-      keyboardRow.map((letter, index) => {
+    (keyboardRow: string) =>
+      keyboardRow.split('').map((letter, index) => {
         return (
           <button
             className={classNames(
